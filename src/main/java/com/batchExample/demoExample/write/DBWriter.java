@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.batchExample.demoExample.Model.User;
 import com.batchExample.demoExample.repository.UserRepository;
 
-@Service
+@Service("job1Writer")
 public class DBWriter implements ItemWriter<User> {
 	@Autowired
 	private UserRepository userRepository;

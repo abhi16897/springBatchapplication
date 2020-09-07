@@ -16,26 +16,46 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.batchExample.demoExample.DemoExampleApplication;
+
 @RestController
-@RequestMapping("/load")
 public class LoadController {
 
 	@Autowired
 	JobLauncher jobLauncher;
 	
 	@Autowired
-	Job job;
-	
-	@GetMapping
+	@Qualifier("job1")
+	Job job1;
+	@Autowired
+	@Qualifier("job2")
+	Job job2;
+	ApplicationContext context;
+	@GetMapping("/load")
 	public BatchStatus load() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-		Map<String, JobParameter> maps=new HashMap<String, JobParameter>();
+		Map<String, JobParameter> maps=new HashMap<String, JobParameter>();	
+		// Job job=context.getBean("User-Detail",Job.class);
 		maps.put("time", new JobParameter(System.currentTimeMillis()));
 		JobParameters parameter=new JobParameters(maps);
-		JobExecution jobExecution=jobLauncher.run(job, parameter);
+		JobExecution jobExecution=jobLauncher.run(job1, parameter);
+		return jobExecution.getStatus();
+	}	
+	@GetMapping("/send")
+	public BatchStatus nice() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		Map<String, JobParameter> maps=new HashMap<String, JobParameter>();	
+		// Job job=context.getBean("User-Detail",Job.class);
+		System.out.println("=================================================HEllo==================================================");
+		maps.put("time", new JobParameter(System.currentTimeMillis()));
+		JobParameters parameter=new JobParameters(maps);
+		JobExecution jobExecution=jobLauncher.run(job2, parameter);
 		return jobExecution.getStatus();
 	}	
 }
