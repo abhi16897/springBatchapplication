@@ -39,6 +39,11 @@ public class LoadController {
 	@Qualifier("job2")
 	Job job2;
 	ApplicationContext context;
+	
+	
+	@Autowired
+	@Qualifier("job3")
+	Job job3;
 	@GetMapping("/load")
 	public BatchStatus load() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		Map<String, JobParameter> maps=new HashMap<String, JobParameter>();	
@@ -58,4 +63,14 @@ public class LoadController {
 		JobExecution jobExecution=jobLauncher.run(job2, parameter);
 		return jobExecution.getStatus();
 	}	
+	@GetMapping("/insert")
+	public BatchStatus post() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		Map<String, JobParameter> maps=new HashMap<String, JobParameter>();	
+		// Job job=context.getBean("User-Detail",Job.class);
+		System.out.println("=================================================HEllo==================================================");
+		maps.put("time", new JobParameter(System.currentTimeMillis()));
+		JobParameters parameter=new JobParameters(maps);
+		JobExecution jobExecution=jobLauncher.run(job3, parameter);
+		return jobExecution.getStatus();
+	}
 }
